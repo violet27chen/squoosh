@@ -17,10 +17,11 @@ import transformLib from '../../lib/image-transform.js';
 
 const { handleRequest } = transformLib;
 
-// 云端函数文件系统里通常没有 images/；本地开发可设 IMAGES_DIR 指向真实目录。
+// 云端：示例图已打进 cloud-functions/images/，用 __dirname 解析即可直接读盘（不依赖出站 fetch）。
+// 本地开发可设 IMAGES_DIR 指向真实目录；生产源图也可放这里或走 ?url=。
 const IMAGES_DIR = process.env.IMAGES_DIR
   ? path.resolve(process.env.IMAGES_DIR)
-  : path.join(process.cwd(), 'images');
+  : path.join(__dirname, '..', 'images');
 
 export async function onRequestGet(context) {
   try {
