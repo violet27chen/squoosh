@@ -218,12 +218,12 @@ node dev-server.cjs   # 默认 http://localhost:3000
 ```
 
 访问 `http://localhost:3000/image/width=400,quality=70,format=webp/sample.png`。
-仓库根 `index.html` 是演示页 + 参数表 + 实时 Playground（把「API 基址」填 `http://localhost:3000`）。
+（本项目不提供线上演示页；本地开发用 curl 验证即可，无需打开网页。）
 
 ## 10. 部署
 
 1. 把代码推到 Git 仓库（GitHub 等）。
-2. 在 **EdgeOne Makers** 控制台创建项目并关联该仓库，生产分支选 `dev`；平台按 `cloud-functions/` 生成 `/image/*` 路由，并静态托管 `index.html` 与图库。
+2. 在 **EdgeOne Makers** 控制台创建项目并关联该仓库，生产分支选 `dev`；平台按 `cloud-functions/` 生成 `/image/*` 路由，并托管图库。
 3. `edgeone.json` 已配好原生模块与外部文件：
    ```json
    {

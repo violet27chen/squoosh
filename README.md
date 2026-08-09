@@ -218,12 +218,12 @@ node dev-server.cjs   # default http://localhost:3000
 ```
 
 Visit `http://localhost:3000/image/width=400,quality=70,format=webp/sample.png`.
-The root `index.html` is a demo page + param table + live Playground (set "API base" to `http://localhost:3000`).
+(This project does not ship an online demo page; use curl locally to verify, no web page needed.)
 
 ## 10. Deployment
 
 1. Push code to a Git repo (GitHub, etc.).
-2. In **EdgeOne Makers** console, create a project and link the repo, set production branch to `dev`; the platform generates `/image/*` route from `cloud-functions/` and statically hosts `index.html` and the image library.
+2. In **EdgeOne Makers** console, create a project and link the repo, set production branch to `dev`; the platform generates `/image/*` route from `cloud-functions/` and hosts the image library.
 3. `edgeone.json` already configures native modules and external files:
    ```json
    {

@@ -28,8 +28,7 @@ cloud-functions/package.json   # 声明 sharp 及 Linux 原生二进制依赖
 cloud-functions/images/        # 打包进函数包的示例图（由 edgeone.json 的 includeFiles 复制进 /var/user/included_files/cloud-functions/images/）
 dev-server.cjs                # 本地开发服务器（纯 Node，无需 EdgeOne 即可验证）
 images/                       # 源图目录（本地开发用；部署时复制进 cloud-functions/images/）
-index.html                    # 演示页 + 参数表 + 实时 Playground（EdgeOne 静态托管）
-README.md                     # 面向调用方的 API 文档
+README.md                     # 面向调用方的 API 文档（中英文）
 README-TRANSFORM.md           # 本文（技术细节 / 排障）
 ```
 
@@ -87,9 +86,7 @@ node dev-server.cjs    # 默认 http://localhost:3000
 http://localhost:3000/image/width=400,quality=70,format=webp/sample.png
 ```
 
-打开仓库根 `index.html` 可直接用 Playground（把「API 基址」填成 `http://localhost:3000`）。
-
-> 注意：dev-server.cjs 只处理 `/image/*`；静态 `index.html` 需另起一个静态服务器（如 `npx serve` 或 `python -m http.server`）才能本地预览 Playground 页面本身。
+> 注意：本项目不提供线上演示页。本地开发用 `node dev-server.cjs` 起服务后，直接 `curl http://localhost:3000/image/...` 验证即可，无需打开网页。
 
 ## 部署到 EdgeOne Makers
 
@@ -101,7 +98,7 @@ http://localhost:3000/image/width=400,quality=70,format=webp/sample.png
    ```
 4. 每次 `git push` 自动构建并发布。
 
-构建时平台执行 `npm install`（读取 `cloud-functions/package.json` 中的 sharp 及 Linux 原生二进制依赖），随后部署 `cloud-functions/image/[[path]].js` 为 `/image/*` 路由，并静态托管 `index.html`、演示资源与 `images/`。
+构建时平台执行 `npm install`（读取 `cloud-functions/package.json` 中的 sharp 及 Linux 原生二进制依赖），随后部署 `cloud-functions/image/[[path]].js` 为 `/image/*` 路由，并托管 `images/`。
 
 ## 平台约束（来自 EdgeOne Makers Cloud Functions）
 
