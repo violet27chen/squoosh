@@ -4,7 +4,7 @@
 
 # API & CLI
 
-Squoosh has [an API](https://github.com/GoogleChromeLabs/squoosh/tree/dev/libsquoosh) and [a CLI](https://github.com/GoogleChromeLabs/squoosh/tree/dev/cli) to compress many images at once.
+Squoosh has [an API](https://github.com/violet27chen/squoosh/tree/dev/libsquoosh) and [a CLI](https://github.com/violet27chen/squoosh/tree/dev/cli) to compress many images at once.
 
 # Privacy
 
@@ -39,7 +39,7 @@ To develop for Squoosh:
 
 Squoosh is an open-source project that appreciates all community involvement. To contribute to the project, follow the [contribute guide](/CONTRIBUTING.md).
 
-[squoosh]: https://squoosh.app
+[squoosh]: https://image.violet27chen.com
 
 ---
 
@@ -47,7 +47,7 @@ Squoosh is an open-source project that appreciates all community involvement. To
 
 > 📖 中文文档（API 调用指南）：[README.zh-CN.md](./README.zh-CN.md)
 
-This repository extends [Squoosh](https://github.com/GoogleChromeLabs/squoosh) into a **Cloudflare-Images-style on-demand image transformation service**, running on **EdgeOne Makers Cloud Functions**. It is cloud-agnostic: image sources can be a local directory or any public URL, and output is generated in real time from URL parameters and cached at the edge.
+This repository extends [Squoosh](https://github.com/violet27chen/squoosh) into a **Cloudflare-Images-style on-demand image transformation service**, running on **EdgeOne Makers Cloud Functions**. It is cloud-agnostic: image sources can be a local directory or any public URL, and output is generated in real time from URL parameters and cached at the edge.
 
 > Live example endpoint: `https://image.violet27chen.com`
 > The original Squoosh in-browser compression UI source (`src/`, `codecs/`) is fully preserved. This service adds a server-side "URL-as-API" capability on top of it.

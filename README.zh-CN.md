@@ -4,7 +4,7 @@
 
 # API & CLI
 
-Squoosh 提供 [API](https://github.com/GoogleChromeLabs/squoosh/tree/dev/libsquoosh) 和 [CLI](https://github.com/GoogleChromeLabs/squoosh/tree/dev/cli)，可一次性压缩多张图片。
+Squoosh 提供 [API](https://github.com/violet27chen/squoosh/tree/dev/libsquoosh) 和 [CLI](https://github.com/violet27chen/squoosh/tree/dev/cli)，可一次性压缩多张图片。
 
 # 隐私
 
@@ -39,7 +39,7 @@ Squoosh 不会把你的图片发送到服务器。所有图像压缩都在本地
 
 Squoosh 是一个开源项目，欢迎社区参与。要参与项目，请遵循[贡献指南](/CONTRIBUTING.md)。
 
-[squoosh]: https://squoosh.app
+[squoosh]: https://image.violet27chen.com
 
 ---
 
@@ -47,7 +47,7 @@ Squoosh 是一个开源项目，欢迎社区参与。要参与项目，请遵循
 
 > 📖 English README: [README.md](./README.md)
 
-本仓库把 [Squoosh](https://github.com/GoogleChromeLabs/squoosh) 扩展成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
+本仓库把 [Squoosh](https://github.com/violet27chen/squoosh) 扩展成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
 
 > 线上示例端点：`https://image.violet27chen.com`
 > Squoosh 原浏览器端压缩 UI 源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。

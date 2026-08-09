@@ -1,6 +1,6 @@
 # Squoosh Transform — 自托管按需图像变换服务
 
-把 [Squoosh](https://github.com/GoogleChromeLabs/squoosh) 项目改造成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
+把 [Squoosh](https://github.com/violet27chen/squoosh) 项目改造成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
 
 > 原 Squoosh 的浏览器端压缩 UI 源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
 
