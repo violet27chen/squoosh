@@ -1,8 +1,4 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npm install",
-  "outputDirectory": ".",
-  "nodeVersion": "20.18.0",
   "cloudFunctions": {
     "nodejs": {
       "externalNodeModules": ["sharp", "@img/sharp-linux-x64"],
