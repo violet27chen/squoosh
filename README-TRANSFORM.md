@@ -110,7 +110,7 @@ http://localhost:3000/image/width=400,quality=70,format=webp/sample.png
 | 最大执行时长 | 120s（默认 30s） | 一般图像变换远低于此 |
 | Node 版本 | v20.x | sharp 0.33 兼容 |
 
-> **原生模块稳定性**：Serverless 运行时下 sharp 的原生 libvips 二进制偶发「加载即挂死」（表现为函数 30s 网关超时、且无明显报错）。本项目已做三道加固：① `cloud-functions/package.json` 把 `@img/sharp-linux-x64` 与 `@img/sharp-linuxmusl-x64` 锁定为显式依赖，强制构建把 Linux 二进制打进包，避免在运行时去下载；② 冷启动 `ensureSharp()` 烟测，原生二进制缺失/不兼容会立刻抛清晰错误；③ `withTimeout()` 给初始化与变换都套硬超时，挂死时秒级返回 500 而非沉默卡满 30s。若线上仍出现 30s 超时，优先到控制台查看函数日志里的 `sharp 初始化失败` / `超时` 字样。
+> **原生模块稳定性**：Serverless 运行时下 sharp 的原生 libvips 二进制偶发「加载即挂死」（表现为函数 30s 网关超时、且无明显报错）。本项目已做三道加固：① 根 `package.json` 与 `cloud-functions/package.json` 把 `@img/sharp-linux-x64`(glibc)锁定为**硬依赖**，强制构建把 Linux 原生二进制打进包，避免被 `--omit=optional` 跳过或在运行时去下载；**切勿**把 musl 变体 `@img/sharp-linuxmusl-x64` 加为硬依赖——EdgeOne 构建机是 glibc，musl 包会因 `EBADPLATFORM` 直接让 `npm install` 失败；② 冷启动 `ensureSharp()` 烟测，原生二进制缺失/不兼容会立刻抛清晰错误；③ `withTimeout()` 给初始化与变换都套硬超时，挂死时秒级返回 500 而非沉默卡满 30s。若线上仍出现 30s 超时，优先到控制台查看函数日志里的 `sharp 初始化失败` / `超时` 字样。
 
 ## 安全说明
 
