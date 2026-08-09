@@ -214,7 +214,36 @@ function isBlockedHost(host) {
 }
 
 /**
- * 抓取公网图片作为源（带协议与 SSRF 检查）。用于 ?url=。
+ * ?url= 域名白名单。读环境变量 ALLOWED_URL_HOSTS（逗号分隔，可多个）。
+ * - 未设置或为空：不限制（保持开放行为）
+ * - 设了值：只允许这些 host（精确匹配，忽略大小写）
+ * 本地图库（/image/<opts>/<path>）不受影响，此白名单仅约束 ?url= 抓取。
+ */
+let _allowedHostsCache = null;
+function getAllowedHosts() {
+  if (_allowedHostsCache) return _allowedHostsCache;
+  const raw = process.env.ALLOWED_URL_HOSTS;
+  if (!raw || !raw.trim()) {
+    _allowedHostsCache = null; // 空 = 不限制
+  } else {
+    _allowedHostsCache = new Set(
+      raw
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean)
+    );
+  }
+  return _allowedHostsCache;
+}
+
+function isHostAllowed(host) {
+  const allowed = getAllowedHosts();
+  if (!allowed) return true; // 未配置 = 放行
+  return allowed.has(String(host || '').toLowerCase());
+}
+
+/**
+ * 抓取公网图片作为源（带协议、SSRF、域名白名单检查）。用于 ?url=。
  */
 async function fetchRemote(url) {
   let u;
@@ -225,6 +254,9 @@ async function fetchRemote(url) {
   }
   if (u.protocol !== 'http:' && u.protocol !== 'https:') throw new Error('only http(s) allowed');
   if (isBlockedHost(u.hostname)) throw new Error('blocked host');
+  if (!isHostAllowed(u.hostname)) {
+    throw new Error('host not allowed by ALLOWED_URL_HOSTS: ' + u.hostname);
+  }
   const res = await fetchWithTimeout(u.toString(), FETCH_TIMEOUT_MS);
   if (!res.ok) throw new Error('fetch failed: ' + res.status);
   const ct = res.headers.get('content-type') || '';

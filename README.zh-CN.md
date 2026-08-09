@@ -174,6 +174,11 @@ open("out.webp", "wb").write(r.content)
 
 - **路径穿越防护**：本地图库经 `path.resolve` + 前缀校验，禁止 `../` 逃逸图库目录。
 - **SSRF 防护**：`?url=` 仅允许 `http`/`https`，并屏蔽 `localhost`、回环、私网网段（10/172.16–31/192.168）。生产环境建议补充 DNS 重绑定校验。
+- **`?url=` 域名白名单**：通过环境变量 `ALLOWED_URL_HOSTS` 控制可抓取的外部域名。
+  - **未设置或为空**：不限制（保持开放行为，任何公网图都可抓）。
+  - **设了值**：只允许列表中的域名（精确匹配，忽略大小写），多个用 `,` 隔开，例如 `ALLOWED_URL_HOSTS=images.violet27chen.com,cdn.sanity.io`。非白名单域名返回 `host not allowed by ALLOWED_URL_HOSTS` 错误。
+  - 本地图库（`/image/<opts>/<path>`）**不受此白名单影响**。
+  - 在 EdgeOne Makers 控制台的项目环境变量里配置即可，无需改代码、不进仓库。
 - **源图大小**：`?url=` 抓取未做硬性上限，生产可按需加 `Content-Length` 校验。
 
 ---

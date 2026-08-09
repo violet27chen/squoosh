@@ -118,6 +118,7 @@ http://localhost:3000/image/width=400,quality=70,format=webp/sample.png
 
 - **路径穿越防护**：本地源图经 `path.resolve` + 前缀校验，禁止 `../` 逃逸 `IMAGES_DIR`。
 - **SSRF 防护**：`?url=` 仅允许 http/https，并屏蔽 `localhost`、回环、私网网段（10/172.16-31/192.168）。生产环境建议进一步做 DNS 重绑定校验。
+- **`?url=` 域名白名单（环境变量 `ALLOWED_URL_HOSTS`）**：未设置=不限制；设置后只允许列表域名（逗号分隔，精确匹配忽略大小写），非白名单域名返回 `host not allowed by ALLOWED_URL_HOSTS` 错误。本地图库不受此限制。在 EdgeOne 控制台环境变量配置，不进仓库。
 - **源图大小**：`?url=` 抓取未做硬性上限，部署前可按需加 `Content-Length` 校验。
 
 ## 扩展
