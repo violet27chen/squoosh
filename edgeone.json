@@ -1,0 +1,9 @@
+{
+  "cloudFunctions": {
+    "nodejs": {
+      "externalNodeModules": ["sharp", "@img/sharp-linux-x64"],
+      "includeFiles": ["cloud-functions/images/**/*"],
+      "maxDuration": 60
+    }
+  }
+}
