@@ -1,7 +1,11 @@
 {
   "private": true,
   "dependencies": {
-    "sharp": "^0.33.5"
+    "sharp": "0.33.5"
+  },
+  "optionalDependencies": {
+    "@img/sharp-linux-x64": "0.33.5",
+    "@img/sharp-linuxmusl-x64": "0.33.5"
   },
   "name": "squoosh",
   "version": "2.0.0",
