@@ -2,10 +2,15 @@
 
 > 📖 English README: [README.md](./README.md)
 
-把 [Squoosh](https://github.com/GoogleChromeLabs/squoosh) 改造成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
+## 项目介绍
+
+[Squoosh](https://github.com/GoogleChromeLabs/squoosh) 是 Google 开源的浏览器端图像压缩工具，所有压缩在本地完成、不传服务器。本仓库在 Squoosh 原版基础上做了扩展：**把它改造成一个类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。
+
+- **云厂商无关**：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存，不锁定任何平台。
+- **引擎**：[sharp](https://sharp.pixelplumbing.com/)（libvips），覆盖缩放 / fit / 格式转换（webp·avif·jpeg·png）/ 质量 / 模糊 / 旋转 / 元信息剥离等能力。
+- **保留原 UI**：Squoosh 原浏览器端压缩界面源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
 
 > 线上示例端点：`https://image.violet27chen.com`
-> 原 Squoosh 浏览器端压缩 UI 源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
 
 ---
 
