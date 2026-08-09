@@ -334,6 +334,7 @@ async function handleRequest({ pathname, searchParams, acceptHeader, imagesDir, 
   const getParam = (k) => (searchParams && typeof searchParams.get === 'function' ? searchParams.get(k) : searchParams ? searchParams[k] : null);
   const srcUrl = getParam('url');
 
+  let sourceInfo; // 必须在 try 顶部声明：ensureSharp() 抛错时 catch 块也要能引用（否则 ReferenceError）
   try {
     // 先确认 sharp 可用（云端原生模块挂死会被这里捕获并清晰报错）。
     await ensureSharp();
@@ -342,16 +343,19 @@ async function handleRequest({ pathname, searchParams, acceptHeader, imagesDir, 
     if (relPath) {
       try {
         inputBuffer = resolveLocal(relPath, imagesDir);
+        sourceInfo = 'local:' + imagesDir + '/' + relPath;
       } catch (e) {
         // 云端：函数文件系统里没有 images/，改抓站点同源静态资源。
         if (origin) {
           inputBuffer = await fetchSameOrigin('/images/' + String(relPath).replace(/^\/+/, ''), origin);
+          sourceInfo = 'same-origin:' + origin + '/images/' + relPath;
         } else {
-          throw e;
+          throw new Error('local resolve failed and no origin fallback');
         }
       }
     } else if (srcUrl) {
       inputBuffer = await fetchRemote(srcUrl);
+      sourceInfo = 'remote:' + srcUrl;
     } else {
       return { status: 400, contentType: 'text/plain', body: Buffer.from('missing source: use /image/<opts>/<path> or ?url=') };
     }
@@ -361,9 +365,13 @@ async function handleRequest({ pathname, searchParams, acceptHeader, imagesDir, 
       WITH_TIMEOUT_MS,
       '图像变换'
     );
-    return { status: 200, contentType, body: data };
+    return { status: 200, contentType, body: data, sourceInfo };
   } catch (e) {
-    return { status: 500, contentType: 'text/plain', body: Buffer.from('transform error: ' + e.message) };
+    return {
+      status: 500,
+      contentType: 'text/plain',
+      body: Buffer.from('transform error: ' + e.message + ' | IMAGES_DIR=' + imagesDir + ' | origin=' + (origin || '(none)') + ' | tried=' + (sourceInfo || '(none)')),
+    };
   }
 }
 

@@ -13,15 +13,56 @@
 // 必须返回 Web 标准 Response 对象。
 
 import path from 'node:path';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import transformLib from '../_lib/image-transform.js';
 
 const { handleRequest } = transformLib;
 
-// 云端：示例图已打进 cloud-functions/images/，用 __dirname 解析即可直接读盘（不依赖出站 fetch）。
-// 本地开发可设 IMAGES_DIR 指向真实目录；生产源图也可放这里或走 ?url=。
-const IMAGES_DIR = process.env.IMAGES_DIR
-  ? path.resolve(process.env.IMAGES_DIR)
-  : path.join(__dirname, '..', 'images');
+// ESM 入口里 __dirname 不可用，用 import.meta.url 反解本文件所在目录。
+const ENTRY_DIR = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * 云端 images 目录解析。EdgeOne 把函数打成单 bundle，import.meta.url 指向 /var/user/index.mjs，
+ * process.cwd() 与源码 cloud-functions/ 布局不再同步。
+ * 用「递归向上找含 sample.* 的 images/ 目录」最稳：函数进程可访问的文件系统里，
+ * includeFiles 复制的图片就在某个祖先目录的 images/ 下。
+ */
+function resolveImagesDir() {
+  if (process.env.IMAGES_DIR) return path.resolve(process.env.IMAGES_DIR);
+
+  const startDirs = [
+    ENTRY_DIR,
+    process.cwd(),
+  ].filter(Boolean);
+
+  // 也试试常见产物根
+  const guessRoots = ['/var/user', '/tmp', '/'];
+  for (const root of guessRoots) {
+    if (fs.existsSync(root)) startDirs.push(root);
+  }
+
+  for (const start of startDirs) {
+    let dir = path.resolve(start);
+    // 向上找 6 层
+    for (let i = 0; i < 6; i++) {
+      const candidate = path.join(dir, 'images');
+      try {
+        if (fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()) {
+          const files = fs.readdirSync(candidate);
+          if (files.some((f) => /^sample\./.test(f))) return candidate;
+        }
+      } catch (_) {}
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+  }
+  // 找不到时返回最合理的回退（让错误信息更明确）
+  return path.join(ENTRY_DIR, '..', 'images');
+}
+
+const IMAGES_DIR = resolveImagesDir();
 
 export async function onRequestGet(context) {
   try {
