@@ -10,3 +10,6 @@ build
 src/features-worker/index.ts
 src/client/lazy-app/worker-bridge/meta.ts
 src/client/lazy-app/feature-meta/index.ts
+
+# WorkBuddy 本地内存/项目元数据（不入库）
+.workbuddy/

@@ -1,0 +1,9 @@
+{
+  "name": "squoosh-transform-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EdgeOne Makers Node Functions for on-the-fly image transformation (Cloudflare Images-like).",
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}

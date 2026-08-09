@@ -1,5 +1,8 @@
 {
   "private": true,
+  "dependencies": {
+    "sharp": "^0.33.5"
+  },
   "name": "squoosh",
   "version": "2.0.0",
   "license": "apache-2.0",
