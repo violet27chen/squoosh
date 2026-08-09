@@ -22,7 +22,7 @@
 ## 目录结构
 
 ```
-lib/image-transform.js        # 核心：选项解析 + sharp 变换 + 本地/URL 源 + SSRF 防护（CJS，可被本地与边缘共用）
+cloud-functions/_lib/image-transform.js   # 核心：选项解析 + sharp 变换 + 本地/URL 源 + SSRF 防护（CJS，被入口与 dev-server 共用）
 cloud-functions/image/[[path]].js   # EdgeOne Cloud Functions 入口（ESM，返回 Web 标准 Response）
 cloud-functions/package.json   # 声明 sharp 及 Linux 原生二进制依赖
 dev-server.cjs                # 本地开发服务器（纯 Node，无需 EdgeOne 即可验证）

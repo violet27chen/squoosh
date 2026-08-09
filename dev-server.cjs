@@ -9,7 +9,7 @@
 const http = require('http');
 const { URL } = require('url');
 const path = require('path');
-const lib = require('./lib/image-transform.js');
+const lib = require('./cloud-functions/_lib/image-transform.js');
 
 const IMAGES_DIR = process.env.IMAGES_DIR
   ? path.resolve(process.env.IMAGES_DIR)

@@ -13,7 +13,7 @@
 // 必须返回 Web 标准 Response 对象。
 
 import path from 'node:path';
-import transformLib from '../../lib/image-transform.js';
+import transformLib from '../_lib/image-transform.js';
 
 const { handleRequest } = transformLib;
 
