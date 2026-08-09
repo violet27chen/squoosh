@@ -1,18 +1,56 @@
-# Squoosh Transform — 自托管按需图像变换服务（API 文档）
+# [Squoosh]!
+
+[Squoosh] 是一个图像压缩 Web 应用，在显著减小文件体积的同时保持无损的图像质量。
+
+# API & CLI
+
+Squoosh 提供 [API](https://github.com/GoogleChromeLabs/squoosh/tree/dev/libsquoosh) 和 [CLI](https://github.com/GoogleChromeLabs/squoosh/tree/dev/cli)，可一次性压缩多张图片。
+
+# 隐私
+
+Squoosh 不会把你的图片发送到服务器。所有图像压缩都在本地完成。
+
+不过，Squoosh 使用 Google Analytics 收集以下数据：
+
+- [基础访客数据](https://support.google.com/analytics/answer/6004245?ref_topic=2919631)。
+- 压缩前后的图片体积数值。
+- 若为 Squoosh CLI，Squoosh 安装的类型。
+- 若为 Squoosh CLI，安装的时间和日期。
+
+# 开发
+
+为 Squoosh 做开发：
+
+1. 克隆仓库
+1. 安装 node 依赖，运行：
+   ```sh
+   npm install
+   ```
+1. 然后构建应用，运行：
+   ```sh
+   npm run build
+   ```
+1. 构建完成后，启动开发服务器，运行：
+   ```sh
+   npm run dev
+   ```
+
+# 贡献
+
+Squoosh 是一个开源项目，欢迎社区参与。要参与项目，请遵循[贡献指南](/CONTRIBUTING.md)。
+
+[squoosh]: https://squoosh.app
+
+---
+
+# Squoosh Transform — 自托管按需图像变换服务
 
 > 📖 English README: [README.md](./README.md)
 
-## 项目介绍
-
-[Squoosh](https://github.com/GoogleChromeLabs/squoosh) 是 Google 开源的浏览器端图像压缩工具，所有压缩在本地完成、不传服务器。本仓库在 Squoosh 原版基础上做了扩展：**把它改造成一个类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。
-
-- **云厂商无关**：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存，不锁定任何平台。
-- **引擎**：[sharp](https://sharp.pixelplumbing.com/)（libvips），覆盖缩放 / fit / 格式转换（webp·avif·jpeg·png）/ 质量 / 模糊 / 旋转 / 元信息剥离等能力。
-- **保留原 UI**：Squoosh 原浏览器端压缩界面源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
+本仓库把 [Squoosh](https://github.com/GoogleChromeLabs/squoosh) 扩展成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
 
 > 线上示例端点：`https://image.violet27chen.com`
-
----
+> Squoosh 原浏览器端压缩 UI 源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
 
 ## 1. 快速开始
 
@@ -28,8 +66,6 @@ curl -s -o out.webp "https://image.violet27chen.com/image/format=webp/sample.png
 # 抓任意公网图并变换
 curl -s -o out.webp "https://image.violet27chen.com/image/width=800,quality=80,format=webp?url=https://cdn.example.com/photo.png"
 ```
-
----
 
 ## 2. API 格式
 
@@ -53,8 +89,6 @@ GET /image/<options>?url=<公网图片>   # 抓取任意公网图片
 /image/format=webp/sample.png                      # 只转格式、不缩放
 /image/width=200,height=200,fit=cover,gravity=face?url=https://example.com/p.jpg
 ```
-
----
 
 ## 3. 参数表
 
@@ -86,8 +120,6 @@ GET /image/<options>?url=<公网图片>   # 抓取任意公网图片
 curl -H "Accept: image/avif,image/webp,*/*" "https://image.violet27chen.com/image/width=300,quality=60/sample.png"
 ```
 
----
-
 ## 4. 响应
 
 - **成功**：`200 OK`，`Content-Type` 为输出图片 MIME（如 `image/webp`）。
@@ -106,8 +138,6 @@ transform error: blocked host
 # 含义：?url= 指向内网/回环地址，被 SSRF 防护拦截
 ```
 
----
-
 ## 5. 本地图库
 
 内置图库存放在 `images/`（部署时通过 `edgeone.json` 的 `includeFiles` 复制进函数包）：
@@ -120,8 +150,6 @@ transform error: blocked host
 
 调用时用文件名即可：`/image/<opts>/sample.png`、`/image/<opts>/chatgpt.webp`。
 要加自己的图：把文件丢进 `images/`（或 `cloud-functions/images/`），重新部署即可。
-
----
 
 ## 6. 调用方示例
 
@@ -162,8 +190,6 @@ r = requests.get("https://image.violet27chen.com/image/format=webp/sample.png")
 open("out.webp", "wb").write(r.content)
 ```
 
----
-
 ## 7. 平台约束（EdgeOne Makers Cloud Functions）
 
 | 项 | 限制 | 影响 |
@@ -173,20 +199,12 @@ open("out.webp", "wb").write(r.content)
 | 最大执行时长 | 默认 30s（可配至 120s） | 一般图像变换远低于此 |
 | Node 版本 | v20.x | sharp 0.33 兼容 |
 
----
-
 ## 8. 安全说明
 
 - **路径穿越防护**：本地图库经 `path.resolve` + 前缀校验，禁止 `../` 逃逸图库目录。
 - **SSRF 防护**：`?url=` 仅允许 `http`/`https`，并屏蔽 `localhost`、回环、私网网段（10/172.16–31/192.168）。生产环境建议补充 DNS 重绑定校验。
-- **`?url=` 域名白名单**：通过环境变量 `ALLOWED_URL_HOSTS` 控制可抓取的外部域名。
-  - **未设置或为空**：不限制（保持开放行为，任何公网图都可抓）。
-  - **设了值**：只允许列表中的域名（精确匹配，忽略大小写），多个用 `,` 隔开，例如 `ALLOWED_URL_HOSTS=images.violet27chen.com,cdn.sanity.io`。非白名单域名返回 `host not allowed by ALLOWED_URL_HOSTS` 错误。
-  - 本地图库（`/image/<opts>/<path>`）**不受此白名单影响**。
-  - 在 EdgeOne Makers 控制台的项目环境变量里配置即可，无需改代码、不进仓库。
+- **`?url=` 域名白名单（环境变量 `ALLOWED_URL_HOSTS`）**：未设置=不限制；设置后只允许列表域名（逗号分隔，精确匹配忽略大小写），非白名单域名返回 `host not allowed by ALLOWED_URL_HOSTS` 错误。本地图库（`/image/<opts>/<path>`）不受此白名单影响。在 EdgeOne 控制台环境变量配置，不进仓库。
 - **源图大小**：`?url=` 抓取未做硬性上限，生产可按需加 `Content-Length` 校验。
-
----
 
 ## 9. 本地开发
 
@@ -199,8 +217,6 @@ node dev-server.cjs   # 默认 http://localhost:3000
 
 访问 `http://localhost:3000/image/width=400,quality=70,format=webp/sample.png`。
 仓库根 `index.html` 是演示页 + 参数表 + 实时 Playground（把「API 基址」填 `http://localhost:3000`）。
-
----
 
 ## 10. 部署
 
@@ -219,8 +235,6 @@ node dev-server.cjs   # 默认 http://localhost:3000
    }
    ```
 4. 每次 `git push` 自动构建并发布。
-
----
 
 ## 11. 扩展阅读
 
