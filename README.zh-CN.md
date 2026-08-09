@@ -1,5 +1,7 @@
 # [Squoosh]!
 
+[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/violet27chen/squoosh)
+
 [Squoosh] 是一个图像压缩 Web 应用，在显著减小文件体积的同时保持无损的图像质量。
 
 # API & CLI

@@ -1,5 +1,7 @@
 # [Squoosh]!
 
+[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?template=https://github.com/violet27chen/squoosh)
+
 [Squoosh] is an image compression web app that provides lossless image quality with a significant reduction to file size.
 
 # API & CLI
