@@ -25,10 +25,12 @@
 cloud-functions/_lib/image-transform.js   # 核心：选项解析 + sharp 变换 + 本地/URL 源 + SSRF 防护（CJS，被入口与 dev-server 共用）
 cloud-functions/image/[[path]].js   # EdgeOne Cloud Functions 入口（ESM，返回 Web 标准 Response）
 cloud-functions/package.json   # 声明 sharp 及 Linux 原生二进制依赖
+cloud-functions/images/        # 打包进函数包的示例图（由 edgeone.json 的 includeFiles 复制进 /var/user/included_files/cloud-functions/images/）
 dev-server.cjs                # 本地开发服务器（纯 Node，无需 EdgeOne 即可验证）
-images/                       # 本地源图目录（默认 IMAGES_DIR，可用环境变量覆盖）
+images/                       # 源图目录（本地开发用；部署时复制进 cloud-functions/images/）
 index.html                    # 演示页 + 参数表 + 实时 Playground（EdgeOne 静态托管）
-README-TRANSFORM.md           # 本文
+README.md                     # 面向调用方的 API 文档
+README-TRANSFORM.md           # 本文（技术细节 / 排障）
 ```
 
 ## API
@@ -36,7 +38,7 @@ README-TRANSFORM.md           # 本文
 ### URL 格式
 
 ```
-/image/<options>/<path>            # path 相对于 IMAGES_DIR（默认 images/）
+/image/<options>/<path>            # path 相对于内置图库（cloud-functions/images/）
 /image/<options>?url=<公网图片>     # 抓取任意公网图片
 ```
 
@@ -47,7 +49,7 @@ README-TRANSFORM.md           # 本文
 /image/fit=scale-down,width=1200?url=https://example.com/photo.jpg
 ```
 
-**云端同源兜底**：在 EdgeOne 上 `images/` 属于静态资源、不在函数文件系统内，因此 `/image/<opts>/<path>` 会先尝试读本地文件、读不到时自动改抓站点自己的同源静态资源 `/images/<path>`（仅允许同源，规避 SSRF）。即云端同样可用 `/image/width=400/sample.png` 来变换 `images/sample.png`。
+**云端图库路径**：`edgeone.json` 的 `includeFiles` 把 `cloud-functions/images/**` 复制进构建产物，运行时实际位于 `/var/user/included_files/cloud-functions/images/`。入口 `findImagesDir()` 会精确探测该路径（并执行回退扫描），因此云端同样可用 `/image/width=400/sample.png` 变换 `sample.png`。
 
 ### 参数
 
