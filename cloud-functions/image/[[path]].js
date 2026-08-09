@@ -71,6 +71,32 @@ export async function onRequestGet(context) {
     const remainder = Array.isArray(raw) ? raw.join('/') : String(raw || '');
     const url = new URL(context.request.url);
 
+    // 临时诊断：?probe=1 列出文件系统，定位 includeFiles 复制进来的 images/ 实际位置。
+    if (url.searchParams.get('probe') === '1') {
+      const tree = [];
+      const walk = (dir, depth) => {
+        if (depth > 3) return;
+        let entries;
+        try {
+          entries = fs.readdirSync(dir, { withFileTypes: true });
+        } catch (_) { return; }
+        for (const ent of entries) {
+          const full = path.join(dir, ent.name);
+          tree.push('  '.repeat(depth) + (ent.isDirectory() ? '[D] ' : '[F] ') + ent.name);
+          if (ent.isDirectory()) walk(full, depth + 1);
+        }
+      };
+      const roots = [ENTRY_DIR, process.cwd(), '/var/user', '/var', '/tmp'];
+      for (const r of roots) {
+        tree.push('=== root: ' + r + ' (exists=' + fs.existsSync(r) + ') ===');
+        walk(r, 0);
+      }
+      return new Response('ENTRY_DIR=' + ENTRY_DIR + '\nCWD=' + process.cwd() + '\nIMAGES_DIR=' + IMAGES_DIR + '\n\n' + tree.join('\n'), {
+        status: 200,
+        headers: { 'Content-Type': 'text/plain' },
+      });
+    }
+
     const result = await handleRequest({
       pathname: '/image/' + remainder,
       searchParams: url.searchParams,
