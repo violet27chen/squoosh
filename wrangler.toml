@@ -1,12 +1,15 @@
-# Cloudflare Pages 配置（与 EdgeOne 的 edgeone.json 互不干扰，可共存于同一仓库）
+# Cloudflare Workers 配置（部署按钮 deploy.workers.cloudflare.com 使用）
+# 功能等价于 Pages：静态资源托管 + Pages Functions（functions/ 目录）
+# 部署后域名仍为 *.pages.dev
 name = "squoosh-image"
-pages_build_output_dir = "build"
 compatibility_date = "2024-09-23"
 
-# 非机密环境变量。ALLOWED_URL_HOSTS 留空=不限制 ?url= 抓取；
+# 静态资源目录：npm run build 的输出目录
+[assets]
+directory = "build"
+
+# 环境变量。ALLOWED_URL_HOSTS 留空=不限制 ?url= 抓取；
 # 设了值则只允许这些域名（逗号分隔，如 "cdn.example.com,images.example.com"）。
-# 注意：本项目由 wrangler.toml 管理环境变量，仪表板只能编辑【机密(secret)】。
-# 因此这里直接写死白名单值；若想不重新部署就改白名单，请在仪表板把
-# ALLOWED_URL_HOSTS 设为机密(secret) 并删掉本文件这行（机密会优先生效）。
+# 部署按钮会自动读取 [vars] 并预填到表单中。
 [vars]
 ALLOWED_URL_HOSTS = "cdn.sanity.io"
