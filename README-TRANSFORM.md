@@ -28,7 +28,7 @@ cloud-functions/package.json   # 声明 sharp 及 Linux 原生二进制依赖
 cloud-functions/images/        # 打包进函数包的示例图（由 edgeone.json 的 includeFiles 复制进 /var/user/included_files/cloud-functions/images/）
 dev-server.cjs                # 本地开发服务器（纯 Node，无需 EdgeOne 即可验证）
 images/                       # 源图目录（本地开发用；部署时复制进 cloud-functions/images/）
-README.md                     # 面向调用方的 API 文档（中英文）
+README.md                     # 面向调用方的 API 文档（英文）
 README-TRANSFORM.md           # 本文（技术细节 / 排障）
 ```
 

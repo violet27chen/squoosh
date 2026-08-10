@@ -292,7 +292,7 @@ async function fetchSameOrigin(pathOrUrl, origin) {
 function withTimeout(promise, ms, label) {
   return new Promise((resolve, reject) => {
     const t = setTimeout(() => {
-      reject(new Error(label + ' 超时（' + ms + 'ms）——疑似原生模块在运行时挂死/不兼容'));
+      reject(new Error(label + ' timeout (' + ms + 'ms) — native module may be hanging/incompatible at runtime'));
     }, ms);
     Promise.resolve(promise).then(
       (v) => {
@@ -324,13 +324,13 @@ async function ensureSharp() {
           .png()
           .toBuffer(),
         WITH_TIMEOUT_MS,
-        'sharp 初始化'
+        'sharp init'
       );
       if (!buf || !Buffer.isBuffer(buf)) throw new Error('empty buffer');
       return true;
     })().catch((e) => {
       _sharpReady = null; // 允许下次请求重试
-      throw new Error('sharp 初始化失败（原生二进制可能缺失或不兼容运行时）: ' + e.message);
+      throw new Error('sharp init failed (native binary may be missing or incompatible with runtime): ' + e.message);
     });
   }
   return _sharpReady;
@@ -395,7 +395,7 @@ async function handleRequest({ pathname, searchParams, acceptHeader, imagesDir, 
     const { data, contentType } = await withTimeout(
       transformImage(inputBuffer, opts, acceptHeader),
       WITH_TIMEOUT_MS,
-      '图像变换'
+      'image transform'
     );
     return { status: 200, contentType, body: data, sourceInfo };
   } catch (e) {
