@@ -5,28 +5,13 @@
 
 > **Cloudflare variant**: identical API (same `/image/<opts>/<path>` and `?url=`), different engine (Cloudflare native image resizing). Deploy with the Cloudflare button above — it deploys as a **Pages** project (the button reads `wrangler.toml`'s `pages_build_output_dir = "build"` for the output dir and `[vars]` for `ALLOWED_URL_HOSTS`). The output directory is configured via `pages_build_output_dir` (not shown as a separate form field, but correctly applied at deploy time). Full details in [README.cloudflare.md](./README.cloudflare.md).
 
-本仓库把图像变换能力做成一个 **类 Cloudflare Images 的按需图像变换 API**，运行在 **EdgeOne Makers** 或 **Cloudflare Pages Functions** 上。原 Squoosh 浏览器端压缩 UI（`src/`、`codecs/`）已移除，部署产物仅含图片变换函数与一个极简静态说明页（访问根域名即可看到 API 用法与示例）。
-
-# Developing
-
-```sh
-npm install        # install sharp (cloud-functions/package.json)
-npm run build      # produce build/ (images/ + landing page index.html) for Cloudflare Pages
-```
-
-For local API debugging use each platform's dev command (`wrangler dev` for
-Cloudflare; EdgeOne Makers provides local debugging in its console), or simply
-deploy and verify through the live URL.
-
-# Contributing
-
-Squoosh Transform is an open-source project. To contribute, follow the [contribute guide](/CONTRIBUTING.md).
+This repository turns image transformation into a **Cloudflare-Images-style on-demand image-transform API**, running on **EdgeOne Makers** or **Cloudflare Pages Functions**. The original Squoosh in-browser compression UI (`src/`, `codecs/`) has been removed; the deployment artifact now contains only the transform functions and a minimal static landing page (open the root domain to see API usage and examples).
 
 ---
 
 # Squoosh Transform — Self-hosted On-demand Image Transformation Service
 
-> 📖 中文文档（API 调用指南）：[README.zh-CN.md](./README.zh-CN.md)
+> 📖 Chinese docs (API guide): [README.zh-CN.md](./README.zh-CN.md)
 
 This repository extends [Squoosh](https://github.com/violet27chen/squoosh) into a **Cloudflare-Images-style on-demand image transformation service**, deployable to **EdgeOne Makers** or **Cloudflare Pages Functions**. It is cloud-agnostic: image sources can be a local directory or any public URL, and output is generated in real time from URL parameters and cached at the edge.
 
@@ -227,3 +212,9 @@ edge). The landing page at the root URL documents the API; the API itself is
 - Core transform logic: `cloud-functions/_lib/image-transform.js`
 - Function entry: `cloud-functions/image/[[path]].js`
 - Full technical details, directory structure, and deployment troubleshooting: [`README-TRANSFORM.md`](./README-TRANSFORM.md)
+
+---
+
+## Contributing
+
+Squoosh Transform is an open-source project. To contribute, follow the [contribute guide](/CONTRIBUTING.md).
