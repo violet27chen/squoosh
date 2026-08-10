@@ -1,8 +1,8 @@
-# Squoosh Transform — 自托管按需图像变换服务
+# EdgeImg — 自托管按需图像变换服务
 
-把 [Squoosh](https://github.com/violet27chen/squoosh) 项目改造成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
+本仓库是一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
 
-> 原 Squoosh 的浏览器端压缩 UI 源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
+> 原浏览器端压缩 UI 源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
 
 ## 架构
 
@@ -122,4 +122,4 @@ http://localhost:3000/image/width=400,quality=70,format=webp/sample.png
 
 - 新增输出格式：在 `lib/image-transform.js` 的 `transformImage` 的 `switch` 中加分支即可（`original` 表示沿用输入格式）。
 - 换图片来源：可接入 S3/R2 等对象存储，只需在 `handleRequest` 里新增一种 `inputBuffer` 获取分支。
-- 想跑在真正「边缘 V8」上：需把引擎换成纯 WASM 编解码（如 Squoosh 自带的 WASM 编解码器），并去掉 `fs`/原生依赖——这是另一条路线，可按需另做。
+- 想跑在真正「边缘 V8」上：需把引擎换成纯 WASM 编解码（如原项目自带的 WASM 编解码器），并去掉 `fs`/原生依赖——这是另一条路线，可按需另做。

@@ -1,11 +1,11 @@
-# Squoosh Transform — 自托管按需图片变换 API
+# EdgeImg — 自托管按需图片变换 API
 
-[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?repository-url=https%3A%2F%2Fgithub.com%2Fviolet27chen%2Fsquoosh&root-directory=.%2F&build-command=npm%20run%20build&install-command=npm%20install&output-directory=build&env=ALLOWED_URL_HOSTS&env-description=%E9%99%90%E5%88%B6%20%3Furl%3D%20%E8%BF%9C%E7%A8%8B%E6%8A%93%E5%8F%96%E7%9A%84%E5%85%81%E8%AE%B8%E5%9F%9F%E5%90%8D%E7%99%BD%E5%90%8D%E5%8D%95%EF%BC%9B%E7%95%99%E7%A9%BA%3D%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%88%E5%A4%9A%E4%B8%AA%E7%94%A8%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%EF%BC%89)
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/violet27chen/squoosh)
+[![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?repository-url=https%3A%2F%2Fgithub.com%2Fviolet27chen%2Fedgeimg&root-directory=.%2F&build-command=npm%20run%20build&install-command=npm%20install&output-directory=build&env=ALLOWED_URL_HOSTS&env-description=%E9%99%90%E5%88%B6%20%3Furl%3D%20%E8%BF%9C%E7%A8%8B%E6%8A%93%E5%8F%96%E7%9A%84%E5%85%81%E8%AE%B8%E5%9F%9F%E5%90%8D%E7%99%BD%E5%90%8D%E5%8D%95%EF%BC%9B%E7%95%99%E7%A9%BA%3D%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%88%E5%A4%9A%E4%B8%AA%E7%94%A8%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%EF%BC%89)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/violet27chen/edgeimg)
 
 > **Cloudflare 版本**：API 完全一致（同样的 `/image/<选项>/<路径>` 与 `?url=`），仅底层换成 Cloudflare 原生图片缩放。用上方 Cloudflare 按钮即可一键部署——按钮会以 **Pages** 模式部署（读取 `wrangler.toml` 的 `pages_build_output_dir = "build"` 作为输出目录、`[vars]` 作为 `ALLOWED_URL_HOSTS`）。输出目录由 `pages_build_output_dir` 配置（表单里不单独显示该字段，但部署时会正确应用）。详见 [README.cloudflare.md](./README.cloudflare.md)。
 
-本仓库把图像变换能力做成一个 **类 Cloudflare Images 的按需图像变换 API**，运行在 **EdgeOne Makers 的 Node Functions** 或 **Cloudflare Pages Functions** 上。原 Squoosh 浏览器端压缩 UI（`src/`、`codecs/`）已移除，部署产物仅含图片变换函数与一个极简静态说明页（访问根域名即可看到 API 用法与示例）。
+本仓库把图像变换能力做成一个 **类 Cloudflare Images 的按需图像变换 API**，运行在 **EdgeOne Makers 的 Node Functions** 或 **Cloudflare Pages Functions** 上。原浏览器端压缩 UI（`src/`、`codecs/`）已移除，部署产物仅含图片变换函数与一个极简静态说明页（访问根域名即可看到 API 用法与示例）。
 
 - 不锁定任何云厂商：图像源可以是本地图库或任意公网 URL，输出按 URL 参数实时生成并边缘缓存。
 - 零服务器：跑在边缘函数免费额度内，个人使用基本零成本。
@@ -35,13 +35,13 @@ curl -s -o out.webp "https://image.violet27chen.com/image/width=800,quality=80,f
 
 # 贡献
 
-Squoosh Transform 是一个开源项目，欢迎社区参与。要参与项目，请遵循[贡献指南](/CONTRIBUTING.md)。
+EdgeImg 是一个开源项目，欢迎社区参与。要参与项目，请遵循[贡献指南](/CONTRIBUTING.md)。
 
 ---
 
-# Squoosh Transform — 技术细节
+# EdgeImg — 技术细节
 
-本仓库把 [Squoosh](https://github.com/violet27chen/squoosh) 扩展成一个 **类 Cloudflare Images 的按需图像变换服务**，可部署到 **EdgeOne Makers** 或 **Cloudflare Pages Functions**。两者的**对外 API 完全一致**：
+本仓库是一个 **类 Cloudflare Images 的按需图像变换服务**，可部署到 **EdgeOne Makers** 或 **Cloudflare Pages Functions**。两者的**对外 API 完全一致**：
 
 ```
 /image/<选项>/<路径>      转换站点静态目录 /images/<路径> 下的本地图片
@@ -51,7 +51,7 @@ Squoosh Transform 是一个开源项目，欢迎社区参与。要参与项目�
 唯一区别在底层引擎：Cloudflare Workers 运行时**无法运行 sharp 这类原生模块**，因此 Cloudflare 版改用 **Cloudflare 原生图片缩放**（`fetch` 的 `cf.image` 选项）。相同请求 → 相同输出图片，调用方式不变。
 
 > 线上示例端点：`https://image.violet27chen.com`
-> 原 Squoosh 浏览器端压缩 UI 源码（`src/`、`codecs/`）已移除。本仓库现在是纯按需图像变换 **API** + 一个极简静态说明页（根路径即是说明页）。
+> 原浏览器端压缩 UI 源码（`src/`、`codecs/`）已移除。本仓库现在是纯按需图像变换 **API** + 一个极简静态说明页（根路径即是说明页）。
 
 ## 1. 快速开始
 

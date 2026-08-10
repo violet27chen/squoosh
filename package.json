@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "squoosh",
+  "name": "edgeimg",
   "version": "2.0.0",
   "license": "apache-2.0",
   "description": "Self-hosted on-demand image transformation API (Cloudflare Pages Functions / EdgeOne Makers). Zero server, URL-as-API.",

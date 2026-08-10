@@ -1,5 +1,5 @@
 {
-  "name": "squoosh-transform-cloud-functions",
+  "name": "edgeimg-cloud-functions",
   "version": "1.0.0",
   "private": true,
   "description": "EdgeOne Makers Cloud Functions for on-the-fly image transformation (Cloudflare Images-like).",

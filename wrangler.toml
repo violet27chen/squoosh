@@ -1,7 +1,7 @@
 # Cloudflare Pages 配置（部署按钮 deploy.workers.cloudflare.com 使用）
 # 部署按钮的解析器支持 pages_build_output_dir，不支持 [assets] 语法
 # 因此这里用 Pages 格式：输出目录由 pages_build_output_dir 指定
-name = "squoosh-image"
+name = "edgeimg"
 pages_build_output_dir = "build"
 compatibility_date = "2024-09-23"
 
