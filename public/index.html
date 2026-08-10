@@ -31,9 +31,9 @@
   <div class="card">
     <strong>怎么用？</strong>
     <p>只要在图片地址前面拼上变换参数，就能实时得到处理后的图。把它直接放进 <code>&lt;img src="..."&gt;</code> 即可。</p>
-    <pre>https://你的域名/image/width=400,quality=70,format=webp/sample.png</pre>
+    <pre><span class="dyn">https://你的域名</span>/image/width=400,quality=70,format=webp/sample.png</pre>
     <p>抓网上任意一张图来转换，加 <code>?url=</code>：</p>
-    <pre>https://你的域名/image/width=800,quality=80,format=webp?url=https://example.com/photo.jpg</pre>
+    <pre><span class="dyn">https://你的域名</span>/image/width=800,quality=80,format=webp?url=https://example.com/photo.jpg</pre>
   </div>
 
   <div class="card">
@@ -49,7 +49,7 @@
   </div>
 
   <div class="card examples">
-    <strong>点几个试试（把下面的域名换成你自己的）：</strong><br>
+    <strong>点几个试试（已自动套用当前域名）：</strong><br>
     <a href="/image/width=400,format=webp/sample.png">宽400 · WebP</a>
     <a href="/image/width=800,quality=80,format=webp/sample.png">宽800 · 高质量</a>
     <a href="/image/format=webp/sample.png">仅转 WebP</a>
@@ -61,5 +61,11 @@
     部署在 Cloudflare Pages / EdgeOne Makers 的边缘函数上，免费额度内基本零成本。
   </div>
 </div>
+<script>
+  (function () {
+    var origin = location.origin;
+    document.querySelectorAll('.dyn').forEach(function (el) { el.textContent = origin; });
+  })();
+</script>
 </body>
 </html>
