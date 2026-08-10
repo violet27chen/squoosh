@@ -23,7 +23,7 @@ EdgeOne 版的 `cloud-functions/` 与 `edgeone.json` 保留不动，两套互不
 
 ```bash
 # 本地图库：宽 400、质量 70、转 webp
-curl 'https://<你的域名>/image/width=400,quality=70,format=webp/images/sample.png'
+curl 'https://<你的域名>/image/width=400,quality=70,format=webp/sample.png'
 
 # 自动协商格式（浏览器支持 avif 就给 avif，否则 webp/jpeg）
 curl -H 'Accept: image/avif,image/webp,*/*' \
@@ -43,7 +43,7 @@ curl 'https://<你的域名>/image/width=600,format=webp?url=https://cdn.example
 
 ```bash
 npm install
-npm run build          # 产物输出到 build/（Squoosh 前端 + 静态资源）
+npm run build          # 产物输出到 build/（极简说明页 index.html + images/ 图库）
 npx wrangler pages deploy build
 ```
 

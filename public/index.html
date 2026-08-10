@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片转换 API · 零服务器按需出图</title>
+<style>
+  :root { --bg:#0f1220; --card:#1a1f35; --accent:#5b8cff; --text:#e6e9f5; --muted:#9aa3c0; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  .wrap { max-width:820px; margin:0 auto; padding:48px 20px; }
+  h1 { font-size:28px; margin:0 0 8px; }
+  .sub { color:var(--muted); margin:0 0 28px; }
+  .card { background:var(--card); border:1px solid #2a3150; border-radius:12px; padding:20px 22px; margin:18px 0; }
+  code, pre { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  pre { background:#0b0e1a; border-radius:8px; padding:14px 16px; overflow:auto; color:#cfe0ff; font-size:13px; }
+  .examples a { display:inline-block; margin:6px 8px 6px 0; padding:8px 12px; background:#222a45; border:1px solid #34406b; border-radius:8px; color:var(--accent); text-decoration:none; font-size:13px; }
+  .examples a:hover { background:#2c3760; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  td, th { text-align:left; padding:8px 10px; border-bottom:1px solid #2a3150; }
+  th { color:var(--muted); font-weight:600; }
+  a.link { color:var(--accent); }
+  .foot { color:var(--muted); font-size:13px; margin-top:30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>图片转换 API</h1>
+  <p class="sub">零服务器 · 按需图片缩放 / 转格式 / 压缩 · 改 URL 即得图</p>
+
+  <div class="card">
+    <strong>怎么用？</strong>
+    <p>只要在图片地址前面拼上变换参数，就能实时得到处理后的图。把它直接放进 <code>&lt;img src="..."&gt;</code> 即可。</p>
+    <pre>https://你的域名/image/width=400,quality=70,format=webp/sample.png</pre>
+    <p>抓网上任意一张图来转换，加 <code>?url=</code>：</p>
+    <pre>https://你的域名/image/width=800,quality=80,format=webp?url=https://example.com/photo.jpg</pre>
+  </div>
+
+  <div class="card">
+    <strong>常用参数</strong>
+    <table>
+      <tr><th>想干啥</th><th>写法</th></tr>
+      <tr><td>缩到指定宽度</td><td><code>width=400</code></td></tr>
+      <tr><td>转成 WebP（省体积）</td><td><code>format=webp</code></td></tr>
+      <tr><td>自动选最佳格式</td><td><code>format=auto</code>（默认）</td></tr>
+      <tr><td>控制画质</td><td><code>quality=70</code></td></tr>
+      <tr><td>裁剪填满</td><td><code>fit=cover</code></td></tr>
+    </table>
+  </div>
+
+  <div class="card examples">
+    <strong>点几个试试（把下面的域名换成你自己的）：</strong><br>
+    <a href="/image/width=400,format=webp/sample.png">宽400 · WebP</a>
+    <a href="/image/width=800,quality=80,format=webp/sample.png">宽800 · 高质量</a>
+    <a href="/image/format=webp/sample.png">仅转 WebP</a>
+    <a href="/image/width=200,height=200,fit=cover/sample.png">200×200 裁剪</a>
+  </div>
+
+  <div class="foot">
+    开源地址：<a class="link" href="https://github.com/violet27chen/squoosh">github.com/violet27chen/squoosh</a><br>
+    部署在 Cloudflare Pages / EdgeOne Makers 的边缘函数上，免费额度内基本零成本。
+  </div>
+</div>
+</body>
+</html>

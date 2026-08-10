@@ -1,61 +1,57 @@
-# [Squoosh]!
+# Squoosh Transform — 自托管按需图片变换 API
 
 [![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?repository-url=https%3A%2F%2Fgithub.com%2Fviolet27chen%2Fsquoosh&root-directory=.%2F&build-command=npm%20run%20build&install-command=npm%20install&output-directory=build&env=ALLOWED_URL_HOSTS&env-description=%E9%99%90%E5%88%B6%20%3Furl%3D%20%E8%BF%9C%E7%A8%8B%E6%8A%93%E5%8F%96%E7%9A%84%E5%85%81%E8%AE%B8%E5%9F%9F%E5%90%8D%E7%99%BD%E5%90%8D%E5%8D%95%EF%BC%9B%E7%95%99%E7%A9%BA%3D%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%88%E5%A4%9A%E4%B8%AA%E7%94%A8%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%EF%BC%89)
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/violet27chen/squoosh)
 
 > **Cloudflare 版本**：API 完全一致（同样的 `/image/<选项>/<路径>` 与 `?url=`），仅底层换成 Cloudflare 原生图片缩放。用上方 Cloudflare 按钮即可一键部署——按钮会以 **Pages** 模式部署（读取 `wrangler.toml` 的 `pages_build_output_dir = "build"` 作为输出目录、`[vars]` 作为 `ALLOWED_URL_HOSTS`）。输出目录由 `pages_build_output_dir` 配置（表单里不单独显示该字段，但部署时会正确应用）。详见 [README.cloudflare.md](./README.cloudflare.md)。
 
-[Squoosh] 是一个图像压缩 Web 应用，在显著减小文件体积的同时保持无损的图像质量。
+本仓库把图像变换能力做成一个 **类 Cloudflare Images 的按需图像变换 API**，运行在 **EdgeOne Makers 的 Node Functions** 或 **Cloudflare Pages Functions** 上。原 Squoosh 浏览器端压缩 UI（`src/`、`codecs/`）已移除，部署产物仅含图片变换函数与一个极简静态说明页（访问根域名即可看到 API 用法与示例）。
 
-# API & CLI
+- 不锁定任何云厂商：图像源可以是本地图库或任意公网 URL，输出按 URL 参数实时生成并边缘缓存。
+- 零服务器：跑在边缘函数免费额度内，个人使用基本零成本。
 
-Squoosh 提供 [API](https://github.com/violet27chen/squoosh/tree/dev/libsquoosh) 和 [CLI](https://github.com/violet27chen/squoosh/tree/dev/cli)，可一次性压缩多张图片。
+线上示例端点：`https://image.violet27chen.com`
 
-# 隐私
+📖 English README: [README.md](./README.md) ｜ Cloudflare 专版：[README.cloudflare.md](./README.cloudflare.md)
 
-Squoosh 不会把你的图片发送到服务器。所有图像压缩都在本地完成。
+## API 速览
 
-不过，Squoosh 使用 Google Analytics 收集以下数据：
+```
+GET /image/<选项>/<路径>          # 路径相对于内置图库（默认 images/）
+GET /image/<选项>?url=<公网图片>   # 抓取任意公网图片
+```
 
-- [基础访客数据](https://support.google.com/analytics/answer/6004245?ref_topic=2919631)。
-- 压缩前后的图片体积数值。
-- 若为 Squoosh CLI，Squoosh 安装的类型。
-- 若为 Squoosh CLI，安装的时间和日期。
+示例：
 
-# 开发
+```bash
+# 缩放到宽 400、转 webp、质量 70
+curl -s -o out.webp "https://image.violet27chen.com/image/width=400,quality=70,format=webp/sample.png"
 
-为 Squoosh 做开发：
+# 抓任意公网图并变换
+curl -s -o out.webp "https://image.violet27chen.com/image/width=800,quality=80,format=webp?url=https://cdn.example.com/photo.png"
+```
 
-1. 克隆仓库
-1. 安装 node 依赖，运行：
-   ```sh
-   npm install
-   ```
-1. 然后构建应用，运行：
-   ```sh
-   npm run build
-   ```
-1. 构建完成后，启动开发服务器，运行：
-   ```sh
-   npm run dev
-   ```
+完整参数、调用示例、安全与部署说明见下方章节。
 
 # 贡献
 
-Squoosh 是一个开源项目，欢迎社区参与。要参与项目，请遵循[贡献指南](/CONTRIBUTING.md)。
-
-[squoosh]: https://image.violet27chen.com
+Squoosh Transform 是一个开源项目，欢迎社区参与。要参与项目，请遵循[贡献指南](/CONTRIBUTING.md)。
 
 ---
 
-# Squoosh Transform — 自托管按需图像变换服务
+# Squoosh Transform — 技术细节
 
-> 📖 English README: [README.md](./README.md)
+本仓库把 [Squoosh](https://github.com/violet27chen/squoosh) 扩展成一个 **类 Cloudflare Images 的按需图像变换服务**，可部署到 **EdgeOne Makers** 或 **Cloudflare Pages Functions**。两者的**对外 API 完全一致**：
 
-本仓库把 [Squoosh](https://github.com/violet27chen/squoosh) 扩展成一个 **类 Cloudflare Images 的按需图像变换服务**，运行在 **EdgeOne Makers 的 Node Functions** 上。不锁定任何云厂商：源可来自本地目录或任意公网 URL，输出通过 URL 参数实时生成并边缘缓存。
+```
+/image/<选项>/<路径>      转换站点静态目录 /images/<路径> 下的本地图片
+/image/<选项>/?url=<远程> 转换公网图片（带 SSRF 防护 + 域名白名单）
+```
+
+唯一区别在底层引擎：Cloudflare Workers 运行时**无法运行 sharp 这类原生模块**，因此 Cloudflare 版改用 **Cloudflare 原生图片缩放**（`fetch` 的 `cf.image` 选项）。相同请求 → 相同输出图片，调用方式不变。
 
 > 线上示例端点：`https://image.violet27chen.com`
-> Squoosh 原浏览器端压缩 UI 源码（`src/`、`codecs/`）完整保留，本服务是在其之上新增的「服务端 URL 即 API」能力。
+> 原 Squoosh 浏览器端压缩 UI 源码（`src/`、`codecs/`）已移除。本仓库现在是纯按需图像变换 **API** + 一个极简静态说明页（根路径即是说明页）。
 
 ## 1. 快速开始
 
@@ -145,7 +141,10 @@ transform error: blocked host
 
 ## 5. 本地图库
 
-内置图库存放在 `images/`（部署时通过 `edgeone.json` 的 `includeFiles` 复制进函数包）：
+内置图库提供了上面示例用到的样例图：
+
+- **EdgeOne**：位于 `cloud-functions/images/`（由 `edgeone.json` 的 `includeFiles` 打包进函数）。
+- **Cloudflare**：位于仓库根 `images/`，由构建脚本复制到 `build/images/`，供函数同源回源 `/images/*`。
 
 | 文件 | 说明 |
 |---|---|
@@ -153,8 +152,8 @@ transform error: blocked host
 | `sample.webp` | 示例图（WebP 源） |
 | `chatgpt.webp` | 你本地的 ChatGPT 生成图 |
 
-调用时用文件名即可：`/image/<opts>/sample.png`、`/image/<opts>/chatgpt.webp`。
-要加自己的图：把文件丢进 `images/`（或 `cloud-functions/images/`），重新部署即可。
+调用时用文件名即可：`/image/<选项>/sample.png`、`/image/<选项>/chatgpt.webp`。
+要加自己的图：Cloudflare 丢进 `images/`、EdgeOne 丢进 `cloud-functions/images/`，重新部署即可。
 
 ## 6. 调用方示例
 
@@ -208,20 +207,19 @@ open("out.webp", "wb").write(r.content)
 
 - **路径穿越防护**：本地图库经 `path.resolve` + 前缀校验，禁止 `../` 逃逸图库目录。
 - **SSRF 防护**：`?url=` 仅允许 `http`/`https`，并屏蔽 `localhost`、回环、私网网段（10/172.16–31/192.168）。生产环境建议补充 DNS 重绑定校验。
-- **`?url=` 域名白名单（环境变量 `ALLOWED_URL_HOSTS`）**：未设置=不限制；设置后只允许列表域名（逗号分隔，精确匹配忽略大小写），非白名单域名返回 `host not allowed by ALLOWED_URL_HOSTS` 错误。本地图库（`/image/<opts>/<path>`）不受此白名单影响。在 EdgeOne 控制台环境变量配置，不进仓库。
+- **`?url=` 域名白名单（环境变量 `ALLOWED_URL_HOSTS`）**：未设置=不限制；设置后只允许列表域名（逗号分隔，精确匹配忽略大小写），非白名单域名返回 `host not allowed by ALLOWED_URL_HOSTS` 错误。本地图库（`/image/<选项>/<路径>`）不受此白名单影响。在 EdgeOne 控制台环境变量配置，不进仓库。
 - **源图大小**：`?url=` 抓取未做硬性上限，生产可按需加 `Content-Length` 校验。
 
 ## 9. 本地开发
 
-无需 EdgeOne 即可验证逻辑：
+无需任何云平台即可构建静态产物（图库 + 说明页）：
 
 ```bash
-npm install            # 安装 sharp（已写入 cloud-functions/package.json）
-node dev-server.cjs   # 默认 http://localhost:3000
+npm install
+npm run build      # -> build/images/ 和 build/index.html
 ```
 
-访问 `http://localhost:3000/image/width=400,quality=70,format=webp/sample.png`。
-（本项目不提供线上演示页；本地开发用 curl 验证即可，无需打开网页。）
+随后用任意静态服务器预览 `build/`，或部署到 Cloudflare Pages / EdgeOne Makers 后通过线上 URL 验证 API（推荐——变换跑在边缘）。根路径的说明页已自带 API 文档；API 本身即 `/image/<选项>/<路径>` 与 `/image/<选项>?url=`。
 
 ## 10. 部署
 
@@ -240,6 +238,8 @@ node dev-server.cjs   # 默认 http://localhost:3000
    }
    ```
 4. 每次 `git push` 自动构建并发布。
+
+> Cloudflare Pages 部署见 [README.cloudflare.md](./README.cloudflare.md)。
 
 ## 11. 扩展阅读
 

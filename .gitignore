@@ -13,3 +13,20 @@ src/client/lazy-app/feature-meta/index.ts
 
 # WorkBuddy 本地内存/项目元数据（不入库）
 .workbuddy/
+
+# 已移除的前端源码（仅本地残留，已从仓库删除，非纯 API 所需）
+src/
+codecs/
+rollup.config.js
+client-tsconfig.json
+generic-tsconfig.json
+static-build-tsconfig.json
+worker-tsconfig.json
+tsconfig.json
+serve.json
+dev-server.cjs
+emscripten-types.d.ts
+missing-types.d.ts
+icon-large-maskable.png
+lib/*
+!lib/build-static.js

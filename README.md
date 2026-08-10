@@ -5,46 +5,22 @@
 
 > **Cloudflare variant**: identical API (same `/image/<opts>/<path>` and `?url=`), different engine (Cloudflare native image resizing). Deploy with the Cloudflare button above — it deploys as a **Pages** project (the button reads `wrangler.toml`'s `pages_build_output_dir = "build"` for the output dir and `[vars]` for `ALLOWED_URL_HOSTS`). The output directory is configured via `pages_build_output_dir` (not shown as a separate form field, but correctly applied at deploy time). Full details in [README.cloudflare.md](./README.cloudflare.md).
 
-[Squoosh] is an image compression web app that provides lossless image quality with a significant reduction to file size.
-
-# API & CLI
-
-Squoosh has [an API](https://github.com/violet27chen/squoosh/tree/dev/libsquoosh) and [a CLI](https://github.com/violet27chen/squoosh/tree/dev/cli) to compress many images at once.
-
-# Privacy
-
-Squoosh does not send your image to a server. All image compression processes locally.
-
-However, Squoosh utilizes Google Analytics to collect the following:
-
-- [Basic visitor data](https://support.google.com/analytics/answer/6004245?ref_topic=2919631).
-- The before and after image size value.
-- If Squoosh CLI, the type of Squoosh installation.
-- If Squoosh CLI, the installation time and date.
+本仓库把图像变换能力做成一个 **类 Cloudflare Images 的按需图像变换 API**，运行在 **EdgeOne Makers** 或 **Cloudflare Pages Functions** 上。原 Squoosh 浏览器端压缩 UI（`src/`、`codecs/`）已移除，部署产物仅含图片变换函数与一个极简静态说明页（访问根域名即可看到 API 用法与示例）。
 
 # Developing
 
-To develop for Squoosh:
+```sh
+npm install        # install sharp (cloud-functions/package.json)
+npm run build      # produce build/ (images/ + landing page index.html) for Cloudflare Pages
+```
 
-1. Clone the repository
-1. To install node packages, run:
-   ```sh
-   npm install
-   ```
-1. Then build the app by running:
-   ```sh
-   npm run build
-   ```
-1. After building, start the development server by running:
-   ```sh
-   npm run dev
-   ```
+For local API debugging use each platform's dev command (`wrangler dev` for
+Cloudflare; EdgeOne Makers provides local debugging in its console), or simply
+deploy and verify through the live URL.
 
 # Contributing
 
-Squoosh is an open-source project that appreciates all community involvement. To contribute to the project, follow the [contribute guide](/CONTRIBUTING.md).
-
-[squoosh]: https://image.violet27chen.com
+Squoosh Transform is an open-source project. To contribute, follow the [contribute guide](/CONTRIBUTING.md).
 
 ---
 
@@ -52,10 +28,10 @@ Squoosh is an open-source project that appreciates all community involvement. To
 
 > 📖 中文文档（API 调用指南）：[README.zh-CN.md](./README.zh-CN.md)
 
-This repository extends [Squoosh](https://github.com/violet27chen/squoosh) into a **Cloudflare-Images-style on-demand image transformation service**, running on **EdgeOne Makers Cloud Functions**. It is cloud-agnostic: image sources can be a local directory or any public URL, and output is generated in real time from URL parameters and cached at the edge.
+This repository extends [Squoosh](https://github.com/violet27chen/squoosh) into a **Cloudflare-Images-style on-demand image transformation service**, deployable to **EdgeOne Makers** or **Cloudflare Pages Functions**. It is cloud-agnostic: image sources can be a local directory or any public URL, and output is generated in real time from URL parameters and cached at the edge.
 
 > Live example endpoint: `https://image.violet27chen.com`
-> The original Squoosh in-browser compression UI source (`src/`, `codecs/`) is fully preserved. This service adds a server-side "URL-as-API" capability on top of it.
+> The original Squoosh in-browser compression UI source (`src/`, `codecs/`) has been removed. This repo is now a pure on-demand image-transform **API** plus a minimal static landing page (the root URL documents the API).
 
 ## 1. Quick Start
 
@@ -145,7 +121,10 @@ transform error: blocked host
 
 ## 5. Built-in Image Library
 
-The built-in library lives in `images/` (copied into the function package via `edgeone.json` `includeFiles`):
+The built-in library provides the sample sources used by the examples above.
+
+- **EdgeOne**: lives in `cloud-functions/images/` (bundled into the function package via `edgeone.json` `includeFiles`).
+- **Cloudflare**: lives in `images/` at repo root, copied to `build/images/` by the build script so the Function can fetch same-origin `/images/*` sources.
 
 | File | Description |
 |---|---|
@@ -213,15 +192,17 @@ open("out.webp", "wb").write(r.content)
 
 ## 9. Local Development
 
-No EdgeOne needed to verify logic:
+Build the static output (image library + landing page) without any cloud provider:
 
-```bash
-npm install            # install sharp (already in cloud-functions/package.json)
-node dev-server.cjs   # default http://localhost:3000
+```sh
+npm install
+npm run build      # -> build/images/ and build/index.html
 ```
 
-Visit `http://localhost:3000/image/width=400,quality=70,format=webp/sample.png`.
-(This project does not ship an online demo page; use curl locally to verify, no web page needed.)
+Then preview `build/` with any static server, or test the API by deploying to
+Cloudflare Pages / EdgeOne Makers (recommended — the transform runs on the
+edge). The landing page at the root URL documents the API; the API itself is
+`/image/<options>/<path>` and `/image/<options>?url=`.
 
 ## 10. Deployment
 
