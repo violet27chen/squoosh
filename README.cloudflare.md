@@ -9,7 +9,7 @@
 
 唯一区别在底层引擎：Cloudflare Workers 运行时**无法运行 sharp 这类原生模块**，因此本版改用 **Cloudflare 原生图片缩放**（`fetch` 的 `cf.image` 选项）。相同请求 → 相同输出图片，调用方式不变。
 
-> 如果你要的是 EdgeOne Makers 版（sharp 引擎），见主 README；两份 README 的「一键部署」按钮也是 EdgeOne 版。
+> 如果你要的是 EdgeOne Makers 版（sharp 引擎），见主 README；主 README 顶部已同时提供 **EdgeOne** 与 **Cloudflare** 两个一键部署按钮（Cloudflare 按钮会读取本仓库的 `wrangler.toml`，自动预填 `ALLOWED_URL_HOSTS` 与 `build/` 输出目录）。
 
 ## 1. 目录结构（本版新增）
 
