@@ -9,7 +9,7 @@
 
 唯一区别在底层引擎：Cloudflare Workers 运行时**无法运行 sharp 这类原生模块**，因此本版改用 **Cloudflare 原生图片缩放**（`fetch` 的 `cf.image` 选项）。相同请求 → 相同输出图片，调用方式不变。
 
-> 如果你要的是 EdgeOne Makers 版（sharp 引擎），见主 README；主 README 顶部已同时提供 **EdgeOne** 与 **Cloudflare** 两个一键部署按钮（Cloudflare 按钮会读取本仓库的 `wrangler.toml`，自动预填 `ALLOWED_URL_HOSTS` 与 `build/` 输出目录）。
+> 如果你要的是 EdgeOne Makers 版（sharp 引擎），见主 README；主 README 顶部提供 **EdgeOne** 一键部署按钮。Cloudflare 版**没有**一键按钮——Cloudflare 已废弃旧版 Pages 部署按钮，现仅提供「仅 Worker」的按钮（还会强制 fork 仓库），与本 Pages Functions 项目不兼容。请用主 README [§10.2](./README.md#102-cloudflare-pages-native-image-resizing) 的 `wrangler pages deploy` 手动部署，或在控制台 → Workers & Pages → 创建 → Pages → 连接 Git。
 
 ## 1. 目录结构（本版新增）
 

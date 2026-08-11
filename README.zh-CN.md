@@ -1,9 +1,7 @@
 # EdgeImg — 自托管按需图片变换 API
 
 [![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?repository-url=https%3A%2F%2Fgithub.com%2Fviolet27chen%2Fedgeimg&root-directory=.%2F&build-command=npm%20run%20build&install-command=npm%20install&output-directory=build&env=ALLOWED_URL_HOSTS&env-description=%E9%99%90%E5%88%B6%20%3Furl%3D%20%E8%BF%9C%E7%A8%8B%E6%8A%93%E5%8F%96%E7%9A%84%E5%85%81%E8%AE%B8%E5%9F%9F%E5%90%8D%E7%99%BD%E5%90%8D%E5%8D%95%EF%BC%9B%E7%95%99%E7%A9%BA%3D%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%88%E5%A4%9A%E4%B8%AA%E7%94%A8%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%EF%BC%89)
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/violet27chen/edgeimg)
-
-> **Cloudflare 版本**：API 完全一致（同样的 `/image/<选项>/<路径>` 与 `?url=`），仅底层换成 Cloudflare 原生图片缩放。用上方 Cloudflare 按钮即可一键部署——按钮会以 **Pages** 模式部署（读取 `wrangler.toml` 的 `pages_build_output_dir = "build"` 作为输出目录、`[vars]` 作为 `ALLOWED_URL_HOSTS`）。输出目录由 `pages_build_output_dir` 配置（表单里不单独显示该字段，但部署时会正确应用）。详见 [README.cloudflare.md](./README.cloudflare.md)。
+> **Cloudflare 版本**：API 完全一致（同样的 `/image/<选项>/<路径>` 与 `?url=`），仅底层换成 Cloudflare 原生图片缩放。它以 **Cloudflare Pages** 形态部署——**不是**普通 Worker：`/image/*` 路由来自 Pages Functions 文件 `functions/image/[[path]].ts`，只能在 Pages 项目上运行（普通 Worker 不认 `functions/` 目录）。**没有一键按钮**——Cloudflare 已废弃旧版 Pages 部署按钮，现在只提供「仅 Worker」的按钮（还会强制 fork 仓库），与本 Pages 项目不兼容。请用 `wrangler pages deploy`（见 [README.cloudflare.md](./README.cloudflare.md)）或在 Cloudflare 控制台 → Workers & Pages → 创建 → Pages → 连接 Git 手动部署。
 
 本仓库把图像变换能力做成一个 **类 Cloudflare Images 的按需图像变换 API**，运行在 **EdgeOne Makers 的 Node Functions** 或 **Cloudflare Pages Functions** 上。原浏览器端压缩 UI（`src/`、`codecs/`）已移除，部署产物仅含图片变换函数与一个极简静态说明页（访问根域名即可看到 API 用法与示例）。
 

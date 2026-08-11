@@ -1,9 +1,7 @@
 # EdgeImg
 
 [![Deploy to EdgeOne Makers](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://console.cloud.tencent.com/edgeone/pages/new?repository-url=https%3A%2F%2Fgithub.com%2Fviolet27chen%2Fedgeimg&root-directory=.%2F&build-command=npm%20run%20build&install-command=npm%20install&output-directory=build&env=ALLOWED_URL_HOSTS&env-description=%E9%99%90%E5%88%B6%20%3Furl%3D%20%E8%BF%9C%E7%A8%8B%E6%8A%93%E5%8F%96%E7%9A%84%E5%85%81%E8%AE%B8%E5%9F%9F%E5%90%8D%E7%99%BD%E5%90%8D%E5%8D%95%EF%BC%9B%E7%95%99%E7%A9%BA%3D%E4%B8%8D%E9%99%90%E5%88%B6%EF%BC%88%E5%A4%9A%E4%B8%AA%E7%94%A8%E9%80%97%E5%8F%B7%E5%88%86%E9%9A%94%EF%BC%89)
-[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/violet27chen/edgeimg)
-
-> **Cloudflare variant**: identical API (same `/image/<opts>/<path>` and `?url=`), different engine (Cloudflare native image resizing). It deploys as a **Cloudflare Pages** project — **not** a standalone Worker: the `/image/*` route comes from the Pages Functions file `functions/image/[[path]].ts`, which only runs on Pages (a plain Worker won't pick up the `functions/` directory). The one-click button above provisions a Pages project by reading `wrangler.toml` (`pages_build_output_dir = "build"` for output, `[vars]` for `ALLOWED_URL_HOSTS`). Step-by-step Pages deploy: [§10.2](#102-cloudflare-pages-native-image-resizing) · full details in [README.cloudflare.md](./README.cloudflare.md).
+> **Cloudflare variant**: identical API (same `/image/<opts>/<path>` and `?url=`), different engine (Cloudflare native image resizing). It deploys as a **Cloudflare Pages** project — **not** a standalone Worker: the `/image/*` route comes from the Pages Functions file `functions/image/[[path]].ts`, which only runs on Pages (a plain Worker won't pick up the `functions/` directory). **There is no one-click button** — Cloudflare deprecated the old Pages deploy button and now only offers a *Worker-only* button (it also force-forks the repo), which is incompatible with this Pages project. Deploy via `wrangler pages deploy` ([§10.2](#102-cloudflare-pages-native-image-resizing)) or connect the repo in Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git. Full details in [README.cloudflare.md](./README.cloudflare.md).
 
 This repository turns image transformation into a **Cloudflare-Images-style on-demand image-transform API**, running on **EdgeOne Makers** or **Cloudflare Pages Functions**. The original in-browser compression UI (`src/`, `codecs/`) has been removed; the deployment artifact now contains only the transform functions and a minimal static landing page (open the root domain to see API usage and examples).
 
@@ -213,15 +211,15 @@ edge). The landing page at the root URL documents the API; the API itself is
 
 This variant runs as a **Cloudflare Pages** project — **not** a standalone Worker. The `/image/*` routing comes from the Pages Functions file `functions/image/[[path]].ts`, which only executes on a Pages project. Do **not** deploy it as a plain Worker; a Worker won't pick up the `functions/` directory and the API will 404.
 
-**Option A — One-click (recommended).** Click **Deploy to Cloudflare Pages** at the top of this README. The button reads `wrangler.toml` (`pages_build_output_dir = "build"` for the output dir, `[vars]` for `ALLOWED_URL_HOSTS`) and provisions a Pages project. After it finishes, set `ALLOWED_URL_HOSTS` in the dashboard (see below).
-
-**Option B — Manual (wrangler CLI).** Prerequisites: `npm i -g wrangler` and `wrangler login`.
+**Prerequisites:** `npm i -g wrangler` and `wrangler login`.
 
 ```bash
 npm install
 npm run build                # outputs build/ (landing page index.html + images/ library)
 npx wrangler pages deploy build
 ```
+
+> **No one-click button.** Cloudflare deprecated the old Pages deploy button; the only button it now offers provisions a *Worker* (and force-forks the repo), which is incompatible with this Pages Functions project. Deploy with the commands above, or in the Cloudflare Dashboard → **Workers & Pages → Create → Pages → Connect to Git**, point it at this repo, set build command `npm run build` and output directory `build`, then add the `ALLOWED_URL_HOSTS` variable (below).
 
 After deploy, set the environment variable in **Cloudflare Dashboard → Pages project → Settings → Environment variables**:
 
